@@ -1,0 +1,51 @@
+FUNCTION_BLOCK controle_freio
+
+VAR_INPUT
+    pressao_pedal : REAL;        // 0 a 100
+    velocidade_roda : REAL;      // 0 a 150
+    velocidade_carro : REAL;     // 0 a 150
+END_VAR
+
+VAR_OUTPUT
+    pressao_freio : REAL;        // 0 a 100
+END_VAR
+
+FUZZIFY pressao_pedal
+    TERM baixa := (0, 1) (30, 0);
+    TERM media := (20, 0) (50, 1) (80, 0);
+    TERM alta := (70, 0) (100, 1);
+END_FUZZIFY
+
+FUZZIFY velocidade_roda
+    TERM baixa := (0, 1) (50, 0);
+    TERM media := (40, 0) (75, 1) (110, 0);
+    TERM alta := (100, 0) (150, 1);
+END_FUZZIFY
+
+FUZZIFY velocidade_carro
+    TERM baixa := (0, 1) (50, 0);
+    TERM media := (40, 0) (75, 1) (110, 0);
+    TERM alta := (100, 0) (150, 1);
+END_FUZZIFY
+
+DEFUZZIFY pressao_freio
+    TERM leve := (0, 1) (30, 0);
+    TERM moderada := (20, 0) (50, 1) (80, 0);
+    TERM forte := (70, 0) (100, 1);
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK regras_freio
+    AND : MIN;
+    OR : MAX;
+
+    // Regras de inferência fuzzy
+    RULE 1 : IF pressao_pedal IS alta THEN pressao_freio IS forte;
+    RULE 2 : IF pressao_pedal IS media AND velocidade_roda IS alta THEN pressao_freio IS moderada;
+    RULE 3 : IF pressao_pedal IS baixa AND velocidade_carro IS alta THEN pressao_freio IS leve;
+    RULE 4 : IF velocidade_carro IS media AND velocidade_roda IS media THEN pressao_freio IS moderada;
+    RULE 5 : IF velocidade_roda IS baixa THEN pressao_freio IS leve;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

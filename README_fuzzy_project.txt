@@ -99,3 +99,6 @@ As regras fuzzy são aplicadas com base em condições lógicas para determinar 
 
 Sinta-se à vontade para fazer contribuições, relatar problemas ou sugerir melhorias via pull request.
 
+## Licença
+
+Este projeto está licenciado sob os termos da licença MIT. Consulte o arquivo `LICENSE` para mais detalhes.
